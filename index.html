@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ezequiel — de Jerusalém ao Sheol</title>
+<meta name="description" content="Ezequiel: um roguelike bíblico de corrida. Escolha um profeta, monte seu baralho e atravesse Jerusalém, Egito, Roma e o Sheol. Baixe grátis para Android.">
+<meta property="og:title" content="Ezequiel — de Jerusalém ao Sheol">
+<meta property="og:description" content="Roguelike bíblico de corrida para Android. Escolha um profeta, monte seu baralho e enfrente os chefes.">
+<meta property="og:image" content="img/compartilhar.jpg">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0b1236">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noite: #0b1236;
+    --noite2: #121c52;
+    --ouro: #f4c35a;
+    --ouro-claro: #ffe6a6;
+    --ouro-escuro: #9a6516;
+    --texto: #f3eee2;
+    --suave: #b9bfd9;
+    --cartao: rgba(255, 255, 255, 0.05);
+    --borda: rgba(244, 195, 90, 0.35);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
+  body {
+    margin: 0;
+    background: radial-gradient(ellipse at 50% 0%, #1c2a75 0%, var(--noite) 55%, #060a20 100%) fixed;
+    background-color: var(--noite);
+    color: var(--texto);
+    font-family: "Lora", Georgia, serif;
+    line-height: 1.6;
+  }
+  a { color: var(--ouro-claro); }
+  h2, h3, .botao { font-family: "Cinzel", Georgia, serif; }
+
+  /* topo */
+  .topo {
+    position: relative;
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 48px 16px 64px;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .topo::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: url("img/fundo.jpg") center / cover no-repeat;
+    opacity: 0.55;
+    z-index: -2;
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+  }
+  .topo::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(11,18,54,0.2), rgba(11,18,54,0.3) 55%, rgba(11,18,54,0) 100%);
+    z-index: -1;
+  }
+  .raios {
+    position: absolute; left: 50%; top: 42%;
+    width: 160vmax; height: 160vmax;
+    transform: translate(-50%, -50%);
+    background: repeating-conic-gradient(from 0deg, rgba(255, 220, 140, 0.07) 0deg 5deg, transparent 5deg 20deg);
+    animation: girar 90s linear infinite;
+    z-index: -1;
+    pointer-events: none;
+    -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 55%);
+            mask-image: radial-gradient(circle, #000 0%, transparent 55%);
+  }
+  @keyframes girar { to { transform: translate(-50%, -50%) rotate(360deg); } }
+  .logo {
+    width: min(760px, 92vw);
+    height: auto;
+    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.55));
+    animation: flutuar 5s ease-in-out infinite;
+  }
+  @keyframes flutuar { 50% { transform: translateY(-8px); } }
+  .chamada {
+    font-size: clamp(1.05rem, 2.6vw, 1.35rem);
+    max-width: 640px;
+    margin: 18px auto 30px;
+    color: var(--texto);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+  }
+  .versiculo {
+    font-style: italic;
+    color: var(--ouro-claro);
+    margin-top: 28px;
+    font-size: 0.98rem;
+    opacity: 0.9;
+  }
+
+  /* botões */
+  .botao {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 34px;
+    font-size: clamp(1.05rem, 3.4vw, 1.35rem);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #2b1600;
+    text-decoration: none;
+    background: linear-gradient(180deg, #ffe7a0 0%, #f4c35a 45%, #c8841f 100%);
+    border: 2px solid #ffeec2;
+    border-radius: 10px;
+    box-shadow: 0 0 0 3px var(--ouro-escuro), 0 10px 30px rgba(244, 195, 90, 0.35), inset 0 1px 0 rgba(255,255,255,0.7);
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .botao::after {
+    content: "";
+    position: absolute; top: 0; bottom: 0; width: 30%;
+    left: -40%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.65), transparent);
+    animation: brilho 3.2s ease-in-out infinite;
+  }
+  @keyframes brilho { 0%, 55% { left: -40%; } 100% { left: 130%; } }
+  .botao:hover, .botao:focus-visible { transform: translateY(-2px) scale(1.02); box-shadow: 0 0 0 3px var(--ouro-escuro), 0 14px 40px rgba(244, 195, 90, 0.5), inset 0 1px 0 rgba(255,255,255,0.7); }
+  .botao svg { width: 28px; height: 28px; flex: none; }
+  .detalhes { margin-top: 12px; font-size: 0.92rem; color: var(--suave); }
+
+  /* seções */
+  section { padding: 64px 16px; }
+  .largura { max-width: 1040px; margin: 0 auto; }
+  h2 {
+    text-align: center;
+    color: var(--ouro);
+    font-size: clamp(1.6rem, 4.5vw, 2.3rem);
+    margin: 0 0 8px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+  .sub { text-align: center; color: var(--suave); margin: 0 auto 36px; max-width: 620px; }
+  .grade {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+  }
+  .cartao {
+    position: relative;
+    background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    padding: 22px 20px 20px;
+  }
+  .cartao::before, .cartao::after {
+    content: "";
+    position: absolute;
+    width: 10px; height: 10px;
+    background: var(--ouro);
+    transform: rotate(45deg);
+    top: -6px;
+  }
+  .cartao::before { left: -6px; }
+  .cartao::after { right: -6px; }
+  .cartao h3 { margin: 0 0 6px; color: var(--ouro-claro); font-size: 1.12rem; }
+  .cartao p { margin: 0; color: var(--texto); opacity: 0.88; font-size: 0.98rem; }
+  .numero { font-family: "Cinzel", serif; font-size: 2.2rem; color: var(--ouro); line-height: 1; margin-bottom: 8px; }
+
+  /* regiões */
+  .regioes { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 8px; }
+  .regiao {
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--borda);
+    background: rgba(0,0,0,0.25);
+    font-family: "Cinzel", serif;
+    font-weight: 600;
+  }
+  .seta { color: var(--ouro); align-self: center; }
+
+  /* instalar */
+  .passos { counter-reset: passo; list-style: none; padding: 0; margin: 0 auto; max-width: 680px; }
+  .passos li {
+    counter-increment: passo;
+    position: relative;
+    padding: 14px 16px 14px 64px;
+    margin-bottom: 12px;
+    background: var(--cartao);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+  }
+  .passos li::before {
+    content: counter(passo);
+    position: absolute; left: 16px; top: 50%;
+    transform: translateY(-50%);
+    width: 34px; height: 34px;
+    display: grid; place-items: center;
+    border-radius: 50%;
+    background: var(--ouro);
+    color: #2b1600;
+    font-family: "Cinzel", serif;
+    font-weight: 800;
+  }
+  .aviso { text-align: center; color: var(--suave); font-size: 0.92rem; max-width: 680px; margin: 18px auto 0; }
+  code { background: rgba(0,0,0,0.35); padding: 2px 6px; border-radius: 4px; font-size: 0.82em; word-break: break-all; }
+
+  .final { text-align: center; }
+  footer {
+    text-align: center;
+    padding: 36px 16px 48px;
+    color: var(--suave);
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(244, 195, 90, 0.18);
+  }
+  footer a { margin: 0 8px; }
+
+  .acoes { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+  .botao-2 {
+    color: var(--ouro-claro);
+    background: linear-gradient(180deg, rgba(40, 52, 120, 0.95), rgba(14, 20, 60, 0.95));
+    border-color: var(--ouro);
+  }
+  .botao-2::after { animation-delay: 1.6s; }
+  @media (prefers-reduced-motion: reduce) {
+    .raios, .logo, .botao::after { animation: none; }
+  }
+  @media (max-width: 520px) {
+    .botao { padding: 16px 22px; gap: 10px; }
+    section { padding: 48px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="raios" aria-hidden="true"></div>
+  <img class="logo" src="img/logo.png" width="1000" height="300" alt="Ezequiel — de Jerusalém ao Sheol">
+  <p class="chamada">Um roguelike bíblico de corrida. Escolha um profeta, monte o seu baralho de cartas e atravesse Jerusalém, o Egito, Roma e o Sheol até o confronto final.</p>
+  <div class="acoes">
+    <a class="botao" href="jogar/">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>
+      JOGAR NO NAVEGADOR
+    </a>
+    <a class="botao botao-2" href="ezequiel.apk" download>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M6 10l6 6 6-6"/><path d="M4 20h16"/></svg>
+      BAIXAR PARA ANDROID
+    </a>
+  </div>
+  <p class="detalhes">Grátis • sem anúncios • no navegador ou no Android (APK, 55 MB)</p>
+  <p class="versiculo">"Abriram-se os céus, e eu tive visões de Deus." — Ezequiel 1:1</p>
+</header>
+
+<main>
+  <section>
+    <div class="largura">
+      <h2>O que te espera</h2>
+      <p class="sub">Cada jornada é diferente: as cartas, as relíquias e os caminhos mudam a cada partida.</p>
+      <div class="grade">
+        <div class="cartao">
+          <div class="numero">7</div>
+          <h3>Profetas jogáveis</h3>
+          <p>Ezequiel, Elias, Davi, Sansão, Daniel, Débora e João — cada um com arma, cavalo-anjo e milagre próprios.</p>
+        </div>
+        <div class="cartao">
+          <div class="numero">70</div>
+          <h3>Cartas para colecionar</h3>
+          <p>Monte o seu baralho, junte famílias de cartas (Fogo, Água, Guerra, Fé, Sinais) e descubra as evoluções.</p>
+        </div>
+        <div class="cartao">
+          <div class="numero">30</div>
+          <h3>Chefes com personalidade</h3>
+          <p>Cada chefe tem entrada, jeito de lutar e morte próprios. Todos ficam registrados no Livro da Vida.</p>
+        </div>
+        <div class="cartao">
+          <div class="numero">★</div>
+          <h3>O Templo</h3>
+          <p>Gaste seus Talentos para liberar profetas, fortalecer milagres e fazer juramentos que deixam tudo mais difícil.</p>
+        </div>
+        <div class="cartao">
+          <div class="numero">☀</div>
+          <h3>Desafio do Dia</h3>
+          <p>Um profeta, um juramento e uma regra iguais para todos naquele dia. Quantos pontos você consegue?</p>
+        </div>
+        <div class="cartao">
+          <div class="numero">3</div>
+          <h3>Mini-jogos</h3>
+          <p>Torre de Babel, Muralhas de Jericó e Davi contra Golias, cada um com três estilos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="largura">
+      <h2>A jornada</h2>
+      <p class="sub">Derrote os chefes para avançar de região — e cuidado com o que espera no fim.</p>
+      <div class="regioes">
+        <span class="regiao">Jerusalém</span><span class="seta">›</span>
+        <span class="regiao">Egito</span><span class="seta">›</span>
+        <span class="regiao">Roma</span><span class="seta">›</span>
+        <span class="regiao">Sheol</span><span class="seta">›</span>
+        <span class="regiao">???</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="instalar">
+    <div class="largura">
+      <h2>Como instalar</h2>
+      <p class="sub">O jogo ainda não está na Google Play, por isso a instalação é feita pelo arquivo APK.</p>
+      <ol class="passos">
+        <li>Toque em <strong>Baixar para Android</strong> no celular e espere o download terminar.</li>
+        <li>Abra o arquivo <strong>ezequiel.apk</strong> (na notificação ou na pasta Downloads).</li>
+        <li>Se o Android pedir, permita <strong>instalar apps desta fonte</strong> para o navegador e volte.</li>
+        <li>Toque em <strong>Instalar</strong> e depois em <strong>Abrir</strong>. Boa jornada!</li>
+      </ol>
+      <p class="aviso">O jogo não coleta nenhum dado pessoal — veja a <a href="privacidade.html">política de privacidade</a>.<br>
+      Código de verificação (SHA-256) do arquivo:<br><code>28a6a78b71d82c0d7eeb67cffabdccfc0cd84d76442b19fac12a99408bf6d9ca</code></p>
+    </div>
+  </section>
+
+  <section class="final">
+    <a class="botao" href="ezequiel.apk" download>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M6 10l6 6 6-6"/><path d="M4 20h16"/></svg>
+      BAIXAR O JOGO
+    </a>
+    <p class="detalhes">Em breve também na Google Play e na Steam.</p>
+  </section>
+</main>
+
+<footer>
+  <div>Ezequiel — feito por Kevin Lima Pena</div>
+  <div style="margin-top:8px">
+    <a href="privacidade.html">Política de privacidade</a>
+    <a href="mailto:kevinlimapena@gmail.com">Contato</a>
+  </div>
+</footer>
+
+</body>
+</html>
